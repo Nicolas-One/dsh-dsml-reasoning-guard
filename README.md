@@ -2,7 +2,7 @@
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-用于 dsh 的 DeepSeek 流式输出修复插件：恢复泄漏到 reasoning 中的完整 DSML 工具调用，并隐藏误出现在可见文本中的 `<think>...</think>` 思考段。
+用于 dsh 的 DeepSeek 流式输出修复插件：恢复泄漏到 reasoning 中的完整 DSML 工具调用，并隐藏误出现在可见文本中的 `<think>...</think>` 思考段。当前版本与 dsh `0.2.1-rc.2` 对齐。
 
 ## 兼容性
 

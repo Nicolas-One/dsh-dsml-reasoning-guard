@@ -1,6 +1,6 @@
 {
   "name": "dsh-dsml-reasoning-guard",
-  "version": "0.2.1",
+  "version": "0.2.1-rc.2",
   "description": "Recover DeepSeek DSML tool calls leaked into dsh reasoning streams",
   "license": "MIT",
   "author": "wwj",
