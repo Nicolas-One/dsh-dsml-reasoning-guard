@@ -1,0 +1,34 @@
+{
+  "name": "dsh-dsml-reasoning-guard",
+  "version": "0.2.1",
+  "description": "Recover DeepSeek DSML tool calls leaked into dsh reasoning streams",
+  "license": "MIT",
+  "author": "wwj",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nicolas-One/dsh-dsml-reasoning-guard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Nicolas-One/dsh-dsml-reasoning-guard/issues"
+  },
+  "homepage": "https://github.com/Nicolas-One/dsh-dsml-reasoning-guard#readme",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "dsml.js",
+    "stream.js",
+    "test"
+  ],
+  "engines": {
+    "dsh": "0.2.1-rc.2"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}
