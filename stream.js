@@ -1,6 +1,7 @@
 /** 保留 dsh 流式契约，只在成功结束时恢复完整调用。@author wwj */
 import { randomUUID } from 'node:crypto';
 import { findCallStart, parseCalls, stripTags, stripThink, TagCleaner } from './dsml.js';
+import { ChatmlDetector, chatmlFailure } from './chatml.js';
 
 const MAX_CAPTURE = 2 * 1024 * 1024;
 
@@ -17,7 +18,7 @@ export async function* guardStream(source, options, report = () => {}) {
 
   const getBlock = (index, type) => {
     if (!blocks.has(index)) blocks.set(index, {
-      type, raw: '', cleaner: new TagCleaner({ stripThink: type === 'text' }),
+      type, raw: '', cleaner: new TagCleaner({ stripThink: type === 'text' }), chatml: new ChatmlDetector(),
     });
     return blocks.get(index);
   };
@@ -57,6 +58,12 @@ export async function* guardStream(source, options, report = () => {}) {
       const type = chunk.type === 'reasoning-delta' ? 'reasoning' : 'text';
       const block = getBlock(chunk.index, type);
       remember(block, chunk.text);
+      if (block.chatml.push(chunk.text)) {
+        report('ChatML tool header detected; stream stopped without executing tool');
+        yield { type: 'block-end', index: chunk.index, block: { type, text: block.raw } };
+        yield chatmlFailure();
+        return;
+      }
       if (type === 'text' && chunk.text.trim()) visibleText = true;
       const text = block.cleaner.push(chunk.text);
       if (block.cleaner.changed) changed = true;
@@ -67,6 +74,12 @@ export async function* guardStream(source, options, report = () => {}) {
     if (chunk.type === 'block-end' && ['reasoning', 'text'].includes(chunk.block.type)) {
       const block = getBlock(chunk.index, chunk.block.type);
       remember(block, chunk.block.text, true);
+      if (new ChatmlDetector().push(chunk.block.text, true)) {
+        report('ChatML tool header detected; stream stopped without executing tool');
+        yield chunk;
+        yield chatmlFailure();
+        return;
+      }
       block.closed = true;
       if (block.type === 'text' && chunk.block.text.trim()) visibleText = true;
       yield* flush(chunk.index);
@@ -82,6 +95,11 @@ export async function* guardStream(source, options, report = () => {}) {
     }
 
     if (chunk.type === 'finish') {
+      if ([...blocks.values()].some((block) => block.chatml.push('', true))) {
+        report('ChatML tool header detected; stream stopped without executing tool');
+        yield chatmlFailure();
+        return;
+      }
       for (const index of blocks.keys()) yield* flush(index);
       const block = blocks.get(lastIndex);
       const eligible = chunk.reason.kind === 'stop' && !options.signal?.aborted && !options.purpose

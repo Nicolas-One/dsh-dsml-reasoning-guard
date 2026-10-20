@@ -68,6 +68,22 @@ try {
   }
   console.log('PASS: 混合格式恢复、失败原文保留与错误结束均符合宿主块契约');
 
+  const chatml = '先读取技能。\n<|im_start|>tool:run_code\nconsole.log("example");\n<|im_end|>';
+  let chatmlClosed = false;
+  async function* chatmlSource() {
+    try {
+      yield* chunks(chatml, [...chatml], false).slice(0, -2);
+      assert.fail('ChatML 工具头后不应继续消费源流');
+    } finally { chatmlClosed = true; }
+  }
+  const chatmlAssembler = new BlockAssembler();
+  for await (const chunk of guardStream(chatmlSource(), options)) chatmlAssembler.push(chunk);
+  assert.equal(chatmlAssembler.finish.kind, 'error');
+  assert.equal(chatmlAssembler.finish.failure.code, 'CHATML_TOOL_LEAK');
+  assert.equal(chatmlAssembler.blocks().filter((block) => block.type === 'tool-call').length, 0);
+  assert.equal(chatmlClosed, true);
+  console.log('PASS: 未结束的 ChatML 流及时关闭，宿主收到明确错误且不产生工具调用');
+
   const isolated = ctx.isolate('llm');
   await isolated.plugin(Llm);
   const isolatedFiber = isolated.plugin(guard);

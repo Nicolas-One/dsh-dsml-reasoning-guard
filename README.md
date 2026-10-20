@@ -2,7 +2,7 @@
 
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
 
-用于 dsh 的 DeepSeek 流式输出修复插件：恢复泄漏到 reasoning 中的完整 DSML 工具调用，并隐藏误出现在可见文本中的 `<think>...</think>` 思考段。当前版本与 dsh `0.2.1-rc.2` 对齐。
+用于 dsh 的 DeepSeek 流式输出修复插件：恢复泄漏到 reasoning 中的完整 DSML 工具调用，并隐藏误出现在可见文本中的 `<think>...</think>` 思考段。当前插件版本为 `0.2.1-rc.3`，支持 dsh `0.2.1-rc.2`。
 
 ## 兼容性
 
@@ -41,6 +41,8 @@ dsh plugin --profile web add https://github.com/Nicolas-One/dsh-dsml-reasoning-g
 改变内容后移除过期 `replayState`，避免沿用原始签名或错误的块对齐信息。普通响应保留原始回放元数据，上游异常原样传播。调用捕获上限为 2,097,152 个字符；超过上限不执行不完整调用。
 
 如果可见 `text` 块从块首开始出现 `<think>...</think>`，插件会隐藏思考段并保留闭合标签后的答案。非块首的普通正文示例保持原样。
+
+对于另一种泄漏格式 `<|im_start|>tool:run_code`，插件在 reasoning 或 text 流中发现代码围栏外独立成行的工具头时，立即返回 `CHATML_TOOL_LEAK` 并关闭上游流，避免模型持续生成伪调用而不结束。这种格式没有完整的工具参数结构，插件不会猜测参数、执行原始代码或批量补执行重复内容。原文保留为错误尝试的诊断块；代码围栏内的示例和行内讲解不触发此保护。该错误不在 dsh 默认重试错误列表中；自定义的强制重试策略仍由宿主控制。
 
 ## 验证
 
