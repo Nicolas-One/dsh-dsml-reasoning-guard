@@ -1,0 +1,6 @@
+# 安装 bundle 后，将此行合并到 profile 的 cordis.patch.yml 数组。
+# 自动按模型 ID 匹配，无需指定提供商。
+- id: sub2api-dsml
+  config:
+    dsmlCompatibility: true
+    maxBufferChars: 1048576

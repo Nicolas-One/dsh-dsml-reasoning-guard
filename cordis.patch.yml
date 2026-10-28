@@ -1,0 +1,7 @@
+# 自动按模型 ID 匹配，无需指定提供商。
+- insert:
+    - id: sub2api-dsml
+      name: dsh-llm-sub2api-dsml
+      config:
+        dsmlCompatibility: true
+        maxBufferChars: 1048576
