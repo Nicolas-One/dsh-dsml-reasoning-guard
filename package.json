@@ -1,21 +1,56 @@
 {
   "name": "dsh-llm-sub2api-dsml",
-  "version": "1.0.0",
+  "version": "0.2.1-rc.3.1",
   "private": true,
   "type": "module",
   "main": "index.js",
   "author": "wwj",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/Nicolas-One/dsh-llm-sub2api-dsml.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nicolas-One/dsh-llm-sub2api-dsml.git"
+  },
   "homepage": "https://github.com/Nicolas-One/dsh-llm-sub2api-dsml#readme",
-  "bugs": { "url": "https://github.com/Nicolas-One/dsh-llm-sub2api-dsml/issues" },
+  "bugs": {
+    "url": "https://github.com/Nicolas-One/dsh-llm-sub2api-dsml/issues"
+  },
   "description": "将 DeepSeek 泄漏到思考中的完整 DSML 转换为 DSH 原生工具调用",
-  "keywords": ["dsh", "deepseek-harness", "deepseek", "sub2api", "dsml", "tool-calling"],
-  "files": ["index.js", "adapter.js", "parser.js", "stream.js", "text-buffer.js", "cordis.patch.yml", "examples/cordis.patch.yml", "README.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE"],
-  "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
-  "engines": { "dsh": "0.2.1-rc.3", "node": ">=22.19.0" },
-  "scripts": { "test": "node --test test/*.test.js" },
-  "dependencies": { "ajv": "^8.20.0" },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "deepseek",
+    "sub2api",
+    "dsml",
+    "tool-calling"
+  ],
+  "files": [
+    "index.js",
+    "adapter.js",
+    "parser.js",
+    "stream.js",
+    "text-buffer.js",
+    "cordis.patch.yml",
+    "examples/cordis.patch.yml",
+    "README.md",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "dsh": "0.2.1-rc.3",
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0"
+  },
   "peerDependencies": {
     "@deepseek-ai/cordis": "~4.0.5",
     "@deepseek-ai/dsh-llm": "0.2.1-rc.3",
